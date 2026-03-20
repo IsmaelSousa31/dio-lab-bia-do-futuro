@@ -1,0 +1,36 @@
+{
+  "conhecimento_agente": {
+    "nome": "CalculadorIA",
+    "departamento": "Departamento Pessoal",
+    "regras_calculo": {
+      "formula_base": "(Dias Trabalhados no Mês - Feriados Não Trabalhados - Faltas_Descontadas) * Valor Diário",
+      "observacao": "O cálculo deve sempre considerar o mês vigente e a escala específica do colaborador."
+    },
+    "escalas_trabalho": [
+      {
+        "nome_escala": "5x2",
+        "descricao": "Trabalha 5 dias e folga 2 dias consecutivos.",
+        "dias_padrao_trabalho": ["Segunda", "Terça", "Quarta", "Quinta", "Sexta"],
+        "dias_padrao_folga": ["Sábado", "Domingo"],
+        "trabalha_feriados": false,
+        "desconta_feriado_do_vale": true
+      },
+      {
+        "nome_escala": "6x1",
+        "descricao": "Trabalha 6 dias e folga 1 dia.",
+        "dias_padrao_trabalho": ["Segunda", "Terça", "Quarta", "Quinta", "Sexta", "Sábado"],
+        "dias_padrao_folga": ["Domingo"],
+        "trabalha_feriados": false,
+        "desconta_feriado_do_vale": true
+      },
+      {
+        "nome_escala": "12x36",
+        "descricao": "Trabalha 12 horas seguidas e descansa 36 horas.",
+        "tipo_escala": "alternada",
+        "trabalha_feriados": true,
+        "desconta_feriado_do_vale": false,
+        "nota_regras": "Para 12x36, o agente deve calcular a quantidade exata de plantões no mês, ignorando os feriados, pois o vale é pago por plantão trabalhado."
+      }
+    ]
+  }
+}
