@@ -3,33 +3,32 @@
     "nome": "CalculadorIA",
     "departamento": "Departamento Pessoal",
     "regras_calculo": {
-      "formula_base": "(Dias Trabalhados no Mês - Feriados Não Trabalhados - Faltas_Descontadas) * Valor Diário",
-      "observacao": "O cálculo deve sempre considerar o mês vigente e a escala específica do colaborador."
+      "objetivo": "Calcular o vale-alimentação deduzindo matematicamente os dias trabalhados com base na estrutura do mês informada pelo usuário.",
+      "parametros_obrigatorios_mes": [
+        "Nome do Mês e Ano",
+        "Quantidade total de dias no mês (28, 29, 30 ou 31)",
+        "Dia da semana que o mês começa (ex: Segunda-feira)",
+        "Dia da semana que o mês termina (ex: Terça-feira)"
+      ]
     },
     "escalas_trabalho": [
       {
         "nome_escala": "5x2",
-        "descricao": "Trabalha 5 dias e folga 2 dias consecutivos.",
-        "dias_padrao_trabalho": ["Segunda", "Terça", "Quarta", "Quinta", "Sexta"],
-        "dias_padrao_folga": ["Sábado", "Domingo"],
-        "trabalha_feriados": false,
-        "desconta_feriado_do_vale": true
+        "descricao": "Trabalha de Segunda a Sexta. Folga Sábado e Domingo.",
+        "perguntas_especificas": ["Valor do vale diário", "Datas dos feriados que caem em dias úteis", "Faltas"],
+        "logica_ia": "A IA deve contar as Segundas, Terças, Quartas, Quintas e Sextas dentro do total de dias do mês, subtrair os feriados informados e subtrair as faltas."
       },
       {
         "nome_escala": "6x1",
-        "descricao": "Trabalha 6 dias e folga 1 dia.",
-        "dias_padrao_trabalho": ["Segunda", "Terça", "Quarta", "Quinta", "Sexta", "Sábado"],
-        "dias_padrao_folga": ["Domingo"],
-        "trabalha_feriados": false,
-        "desconta_feriado_do_vale": true
+        "descricao": "Trabalha de Segunda a Sábado. Folga apenas Domingo.",
+        "perguntas_especificas": ["Valor do vale diário", "Datas dos feriados que NÃO caem no domingo", "Faltas"],
+        "logica_ia": "A IA deve pegar o total de dias do mês, subtrair apenas os Domingos matematicamente, subtrair os feriados informados e subtrair as faltas."
       },
       {
         "nome_escala": "12x36",
-        "descricao": "Trabalha 12 horas seguidas e descansa 36 horas.",
-        "tipo_escala": "alternada",
-        "trabalha_feriados": true,
-        "desconta_feriado_do_vale": false,
-        "nota_regras": "Para 12x36, o agente deve calcular a quantidade exata de plantões no mês, ignorando os feriados, pois o vale é pago por plantão trabalhado."
+        "descricao": "Trabalha dia sim, dia não (plantões).",
+        "perguntas_especificas": ["Valor do vale diário", "Primeiro dia de trabalho no mês (dia 1 ou dia 2)", "Datas que a empresa vai fechar/suspender atividades", "Faltas"],
+        "logica_ia": "A IA não desconta feriados normais. Se o trabalho começa no dia 1 (dias ímpares) ou dia 2 (dias pares), ela deve calcular quantos dias ímpares/pares existem no total de dias do mês. Depois, desconta as faltas e os dias de empresa fechada (se coincidirem com o plantão)."
       }
     ]
   }
