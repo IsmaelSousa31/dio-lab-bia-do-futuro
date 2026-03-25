@@ -72,17 +72,6 @@ Testes de garantia de qualidade (QA) aplicados ao agente:
 
 ---
 
-### 6. Pitch
-
-Apresentação da solução, abordando:
-
-- O problema das "alucinações" das IAs com cálculos de calendário.
-- Como a arquitetura híbrida (Chat inteligente + Python lógico) resolve essa falha de forma inovadora.
-
-📄 **Roteiro:** [`docs/05-pitch.md`](./docs/05-pitch.md)
-
----
-
 ## Ferramentas Utilizadas
 
 | Categoria | Ferramentas |
@@ -107,8 +96,7 @@ Apresentação da solução, abordando:
 │   ├── 01-documentacao-agente.md     # Caso de uso e arquitetura
 │   ├── 02-base-conhecimento.md       # Estratégia de dados e integração
 │   ├── 03-prompts.md                 # Engenharia de prompts e Few-Shot
-│   ├── 04-metricas.md                # Avaliação e testes de stress
-│   └── 05-pitch.md                   # Roteiro de apresentação da solução
+│   └── 04-metricas.md                # Avaliação e testes de stress
 │
 ├── 📁 src/                           # Código da aplicação
 │   ├── app.py                        # Motor do Chatbot (Streamlit + Groq + Python)
