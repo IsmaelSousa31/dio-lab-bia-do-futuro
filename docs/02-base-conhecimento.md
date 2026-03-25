@@ -2,15 +2,13 @@
 
 ## Dados Utilizados
 
+Nesta arquitetura avançada e híbrida, a base de conhecimento tradicional (dados em texto injetados no prompt) foi substituída por uma **Base de Regras Programáticas**. 
 
+As regras de negócio do Departamento Pessoal não são enviadas para a IA ler, mas sim implementadas diretamente no motor matemático do Python.
 
-| Arquivo | Formato | Utilização no Agente |
+| Arquivo/Módulo | Formato | Utilização no Agente |
 |---------|---------|----------------------|
-| `base.json` | JSON | Base de conhecimento contendo as regras de cálculo, escalas de trabalho e parâmetros de feriados |
-
-
-> [!TIP]
-> **Quer um dataset mais robusto?** Você pode utilizar datasets públicos do [Hugging Face](https://huggingface.co/datasets) relacionados a finanças, desde que sejam adequados ao contexto do desafio.
+| `app.py` (Motor Matemático) | Função Python | Base de conhecimento algorítmica contendo as regras de cálculo, identificação de dias úteis via biblioteca `calendar` e regras de desconto de cada escala (5x2, 6x1 e 12x36). |
 
 ---
 
@@ -18,51 +16,34 @@
 
 > Você modificou ou expandiu os dados mockados? Descreva aqui.
 
-Sim. Os arquivos de dados mockados originais do template foram removidos. Foi mantido e adaptado exclusivamente o arquivo `base.json`, que foi estruturado sob medida para armazenar a base de conhecimento do agente, contendo as regras de cálculo de vale-alimentação, os tipos de escalas de trabalho e os parâmetros para tratamento de feriados.
+Sim. Os arquivos de dados mockados originais do template (CSV, JSON) foram removidos.
+Foi constatado durante os testes que enviar regras de cálculo matemático (como o antigo `base.json`) para o *System Prompt* fazia com que o LLM sofresse de "alucinação" ao tentar adivinhar o calendário oficial e deduzir feriados. 
+
+Para resolver isto, os dados e regras foram **adaptados de texto para código algorítmico**. A base de conhecimento do agente agora reside na lógica da função `calcular_todas_escalas`, garantindo 100% de precisão matemática, sem depender da probabilidade de geração de texto da IA.
 
 ---
 
 ## Estratégia de Integração
 
-### Como os dados são carregados?
+### Como os dados são carregados e processados?
 > Descreva como seu agente acessa a base de conhecimento.
 
-O arquivo `base.json` é carregado no início da execução da aplicação através de um script em Python. Os dados são lidos da pasta `data`, convertidos em um dicionário (dictionary) e, em seguida, formatados e injetados no contexto do *System Prompt* do agente, garantindo que ele tenha acesso a todas as regras de cálculo e escalas de trabalho antes de iniciar a interação com o usuário.
+A estratégia de integração foi dividida em dois motores independentes (Arquitetura Híbrida):
 
-**Código de carregamento:**
+1. **O LLM (Extrator):** O utilizador interage com o agente enviando uma string padronizada (ex: `03 - 2026 - 25 - 17, 18 - 0`). O LLM atua APENAS como um tradutor, extraindo as intenções e transformando essa entrada num objeto JSON limpo e estruturado.
+2. **O Motor Python (A Base de Conhecimento Viva):** O Python recebe o JSON da IA, cruza a data com a biblioteca nativa `calendar` e aplica as regras de negócio intrínsecas ao código (ex: ignorar domingos na escala 6x1, não descontar feriados no 12x36). 
 
+**Exemplo do Motor de Regras (Base de Conhecimento Aplicada):**
 ```python
-import json
-import os
-
-def carregar_base_conhecimento():
-    # Caminho para o arquivo base.json dentro da pasta data
-    caminho_arquivo = os.path.join("data", "base.json")
-    
-    try:
-        with open(caminho_arquivo, 'r', encoding='utf-8') as arquivo:
-            base_conhecimento = json.load(arquivo)
-            return base_conhecimento
-    except FileNotFoundError:
-        print(f"Erro: O arquivo {caminho_arquivo} não foi encontrado.")
-        return None
-    except json.JSONDecodeError:
-        print("Erro: Falha ao decodificar o arquivo JSON.")
-        return None
-
-# Executando o carregamento
-dados_agente = carregar_base_conhecimento()
-
-if dados_agente:
-    print("Base de conhecimento carregada com sucesso!")
+# Lógica da Escala 12x36 integrada diretamente no processamento
+if dia % 2 != 0:
+    dias_12x36_impar += 1 # Não desconta feriados, conforme regra do DP
 ```
 
 ### Como os dados são usados no prompt?
 > Os dados vão no system prompt? São consultados dinamicamente?
 
-Os dados extraídos do arquivo `base.json` são injetados diretamente no **System Prompt** (prompt de sistema) do agente logo na inicialização da conversa. 
-
-Como o arquivo contém as regras de negócio fixas da empresa (a fórmula de cálculo e as definições exatas das escalas de trabalho, como 5x2 ou 12x36), enviar essas informações como contexto base garante que o **CalculadorIA** compreenda as políticas do Departamento Pessoal de forma estrita. Assim, quando o usuário fornece as variáveis dinâmicas no chat (qual é o mês, se há feriados e o valor diário do vale), o agente cruza essas entradas em tempo real com as regras já consolidadas em seu prompt de sistema, realizando o cálculo de forma precisa e sem alucinar.
+As regras de cálculo **não vão no system prompt**. O *System Prompt* agora é utilizado exclusivamente para forçar a IA a respeitar o formato de extração, impedindo *prompt injection* e garantindo que ela não tente calcular nada por conta própria.
 
 ---
 
@@ -70,37 +51,17 @@ Como o arquivo contém as regras de negócio fixas da empresa (a fórmula de cá
 
 > Mostre um exemplo de como os dados são formatados para o agente.
 
-## Exemplo de Contexto Montado
-
-> Mostre um exemplo de como os dados são formatados para o agente.
-
-Após o script Python ler o arquivo `base.json`, os dados são formatados em texto claro e concatenados com as instruções de comportamento do agente, formando o **System Prompt**. Abaixo está um exemplo de como o LLM recebe esse contexto:
+Como o cálculo foi delegado ao Python, o **System Prompt** foca-se apenas na extração segura de dados e roteamento das interações. Abaixo está o contexto real de como o LLM é instruído:
 
 ```text
-Você é o CalculadorIA, um assistente virtual formal e objetivo que atua no Departamento Pessoal.
-Sua função exclusiva é calcular o total de vales-alimentação dos funcionários de forma precisa.
+Você é uma API de roteamento de dados. 
+Sua ÚNICA função é classificar a entrada do usuário e retornar EXATAMENTE UMA das 3 opções abaixo:
 
-=== BASE DE CONHECIMENTO E REGRAS ===
-Fórmula Base: (Dias Trabalhados no Mês - Feriados Não Trabalhados) * Valor Diário
+OPÇÃO 1: Se o usuário enviou os dados matemáticos separados por hífen, retorne APENAS o JSON.
+Exemplo: 03 - 2026 - 25 - 17, 18 - 0
+Retorno:
+{
+  "mes": 3, "ano": 2026, "valor": 25.0, "feriados": [17, 18], "faltas": 0
+}
 
-Escalas de Trabalho Permitidas:
-1. Escala: 5x2
-   - Descrição: Trabalha 5 dias e folga 2 dias consecutivos.
-   - Trabalha em feriados: Não
-   - Desconta feriado do vale: Sim
-
-2. Escala: 6x1
-   - Descrição: Trabalha 6 dias e folga 1 dia.
-   - Trabalha em feriados: Não
-   - Desconta feriado do vale: Sim
-
-3. Escala: 12x36
-   - Descrição: Trabalha 12 horas seguidas e descansa 36 horas.
-   - Trabalha em feriados: Sim
-   - Desconta feriado do vale: Não
-
-=== INSTRUÇÕES DE OPERAÇÃO ===
-1. Colete com o usuário: Mês base, quantidade de feriados no mês, valor do vale por dia e a escala do funcionário.
-2. Realize o cálculo passo a passo, demonstrando a matemática na resposta.
-3. Se o usuário perguntar sobre assuntos fora do cálculo de benefícios, responda formalmente que você não possui essa informação.
-4. Nunca presuma feriados regionais; utilize apenas os dados fornecidos pelo usuário.
+OPÇÃO 2: Se o usuário enviou APENAS um cumprimento (ex: "oi", "olá", "bom dia") ou pediu ajuda, retorne EXATAMENTE a
