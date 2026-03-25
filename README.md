@@ -1,149 +1,119 @@
-# 🤖 Agente Financeiro Inteligente com IA Generativa
+# 🧮 CalculadorIA - Agente Inteligente para Departamento Pessoal
 
 ## Contexto
 
-Os assistentes virtuais no setor financeiro estão evoluindo de simples chatbots reativos para **agentes inteligentes e proativos**. Neste desafio, você vai idealizar e prototipar um agente financeiro que utiliza IA Generativa para:
+Os assistentes virtuais no setor de Recursos Humanos e Departamento Pessoal estão a evoluir de simples chatbots reativos para **sistemas especialistas inteligentes**. Neste desafio, idealizamos e prototipámos um agente de DP que utiliza IA Generativa integrada a lógicas matemáticas exatas para:
 
-- **Antecipar necessidades** ao invés de apenas responder perguntas
-- **Personalizar** sugestões com base no contexto de cada cliente
-- **Cocriar soluções** financeiras de forma consultiva
-- **Garantir segurança** e confiabilidade nas respostas (anti-alucinação)
-
-> [!TIP]
-> Na pasta [`examples/`](./examples/) você encontra referências de implementação para cada etapa deste desafio.
+- **Automatizar cálculos complexos** de benefícios (vale-alimentação) com precisão absoluta.
+- **Processar múltiplas escalas de trabalho** (5x2, 6x1, 12x36) de forma simultânea.
+- **Garantir segurança** e confiabilidade nas respostas, adotando uma arquitetura híbrida (anti-alucinação) onde a IA atua na extração de dados e o código nativo resolve a matemática.
 
 ---
 
-## O Que Você Deve Entregar
+## O Que Foi Entregue Neste Projeto
 
 ### 1. Documentação do Agente
 
-Defina **o que** seu agente faz e **como** ele funciona:
+Definição de **o que** o agente faz e **como** ele funciona:
 
-- **Caso de Uso:** Qual problema financeiro ele resolve? (ex: consultoria de investimentos, planejamento de metas, alertas de gastos)
-- **Persona e Tom de Voz:** Como o agente se comporta e se comunica?
-- **Arquitetura:** Fluxo de dados e integração com a base de conhecimento
-- **Segurança:** Como evitar alucinações e garantir respostas confiáveis?
+- **Caso de Uso:** Resolução do cálculo automatizado de vales-alimentação, considerando as particularidades de cada escala.
+- **Persona e Tom de Voz:** Formal, direto e objetivo, focado na rotina do analista de DP.
+- **Arquitetura:** Fluxo de injeção de prompt e interceção via Python.
+- **Segurança:** Trava contra Injeção de Prompt (Hack) e delegação da matemática para bibliotecas nativas para evitar alucinação numérica.
 
-📄 **Template:** [`docs/01-documentacao-agente.md`](./docs/01-documentacao-agente.md)
+📄 **Documentação:** [`docs/01-documentacao-agente.md`](./docs/01-documentacao-agente.md)
 
 ---
 
 ### 2. Base de Conhecimento
 
-Utilize os **dados mockados** disponíveis na pasta [`data/`](./data/) para alimentar seu agente:
+Utilização de uma base de regras customizada em formato JSON para alimentar as lógicas do agente:
 
 | Arquivo | Formato | Descrição |
 |---------|---------|-----------|
-| `transacoes.csv` | CSV | Histórico de transações do cliente |
-| `historico_atendimento.csv` | CSV | Histórico de atendimentos anteriores |
-| `perfil_investidor.json` | JSON | Perfil e preferências do cliente |
-| `produtos_financeiros.json` | JSON | Produtos e serviços disponíveis |
+| `base.json` | JSON | Base de conhecimento contendo as regras de cálculo e as características de cada escala (ex: descontar feriado ou não). |
 
-Você pode adaptar ou expandir esses dados conforme seu caso de uso.
-
-📄 **Template:** [`docs/02-base-conhecimento.md`](./docs/02-base-conhecimento.md)
+📄 **Documentação:** [`docs/02-base-conhecimento.md`](./docs/02-base-conhecimento.md)
 
 ---
 
 ### 3. Prompts do Agente
 
-Documente os prompts que definem o comportamento do seu agente:
+Documentação da engenharia de prompts que define o comportamento do agente:
 
-- **System Prompt:** Instruções gerais de comportamento e restrições
-- **Exemplos de Interação:** Cenários de uso com entrada e saída esperada
-- **Tratamento de Edge Cases:** Como o agente lida com situações limite
+- **System Prompt:** Instruções restritas que obrigam o agente a atuar apenas como classificador e extrator de JSON.
+- **Tratamento de Edge Cases:** Como o agente se comporta em caso de saudações ("Oi", "Bom dia") ou pedidos fora do contexto (ex: "Me dê um código de programação").
 
-📄 **Template:** [`docs/03-prompts.md`](./docs/03-prompts.md)
+📄 **Documentação:** [`docs/03-prompts.md`](./docs/03-prompts.md)
 
 ---
 
 ### 4. Aplicação Funcional
 
-Desenvolva um **protótipo funcional** do seu agente:
+Um **protótipo funcional** do agente híbrido:
 
-- Chatbot interativo (sugestão: Streamlit, Gradio ou similar)
-- Integração com LLM (via API ou modelo local)
-- Conexão com a base de conhecimento
+- Interface de chat desenvolvida com **Streamlit**.
+- Integração de IA utilizando o modelo **Llama-3.1-8b-instant** através da API da **Groq**.
+- Motor matemático infalível construído com a biblioteca `calendar` do Python.
 
-📁 **Pasta:** [`src/`](./src/)
+📁 **Código e Execução:** [`src/`](./src/)
 
 ---
 
 ### 5. Avaliação e Métricas
 
-Descreva como você avalia a qualidade do seu agente:
+Testes de garantia de qualidade (QA) aplicados ao agente:
 
-**Métricas Sugeridas:**
-- Precisão/assertividade das respostas
-- Taxa de respostas seguras (sem alucinações)
-- Coerência com o perfil do cliente
+- Testes de Injeção de Prompt (Jailbreak).
+- Testes com entradas incompletas ou mal formatadas.
+- Testes de estresse com cenários de cálculo válidos para validação da "armadura" do sistema.
 
-📄 **Template:** [`docs/04-metricas.md`](./docs/04-metricas.md)
+📄 **Documentação:** [`docs/04-metricas.md`](./docs/04-metricas.md)
 
 ---
 
 ### 6. Pitch
 
-Grave um **pitch de 3 minutos** (estilo elevador) apresentando:
+Apresentação da solução, abordando:
 
-- Qual problema seu agente resolve?
-- Como ele funciona na prática?
-- Por que essa solução é inovadora?
+- O problema das "alucinações" das IAs com cálculos de calendário.
+- Como a arquitetura híbrida (Chat inteligente + Python lógico) resolve essa falha de forma inovadora.
 
-📄 **Template:** [`docs/05-pitch.md`](./docs/05-pitch.md)
+📄 **Roteiro:** [`docs/05-pitch.md`](./docs/05-pitch.md)
 
 ---
 
-## Ferramentas Sugeridas
-
-Todas as ferramentas abaixo possuem versões gratuitas:
+## Ferramentas Utilizadas
 
 | Categoria | Ferramentas |
 |-----------|-------------|
-| **LLMs** | [ChatGPT](https://chat.openai.com/), [Copilot](https://copilot.microsoft.com/), [Gemini](https://gemini.google.com/), [Claude](https://claude.ai/), [Ollama](https://ollama.ai/) |
-| **Desenvolvimento** | [Streamlit](https://streamlit.io/), [Gradio](https://www.gradio.app/), [Google Colab](https://colab.research.google.com/) |
-| **Orquestração** | [LangChain](https://www.langchain.com/), [LangFlow](https://www.langflow.org/), [CrewAI](https://www.crewai.com/) |
-| **Diagramas** | [Mermaid](https://mermaid.js.org/), [Draw.io](https://app.diagrams.net/), [Excalidraw](https://excalidraw.com/) |
+| **LLMs / IA** | API da [Groq](https://groq.com/) (Modelo Llama 3) |
+| **Desenvolvimento** | [Python](https://www.python.org/), [Streamlit](https://streamlit.io/) |
+| **Manipulação de Datas** | Bibliotecas nativas `calendar` e `datetime` |
 
 ---
 
 ## Estrutura do Repositório
 
-```
+```text
 📁 lab-agente-financeiro/
 │
-├── 📄 README.md
+├── 📄 README.md                      # Esta documentação principal do desafio
 │
-├── 📁 data/                          # Dados mockados para o agente
-│   ├── historico_atendimento.csv     # Histórico de atendimentos (CSV)
-│   ├── perfil_investidor.json        # Perfil do cliente (JSON)
-│   ├── produtos_financeiros.json     # Produtos disponíveis (JSON)
-│   └── transacoes.csv                # Histórico de transações (CSV)
+├── 📁 data/                          # Dados e Regras de Negócio
+│   └── base.json                     # Regras das escalas (JSON)
 │
-├── 📁 docs/                          # Documentação do projeto
+├── 📁 docs/                          # Documentação detalhada do projeto
 │   ├── 01-documentacao-agente.md     # Caso de uso e arquitetura
-│   ├── 02-base-conhecimento.md       # Estratégia de dados
-│   ├── 03-prompts.md                 # Engenharia de prompts
-│   ├── 04-metricas.md                # Avaliação e métricas
-│   └── 05-pitch.md                   # Roteiro do pitch
+│   ├── 02-base-conhecimento.md       # Estratégia de dados e integração
+│   ├── 03-prompts.md                 # Engenharia de prompts e Few-Shot
+│   ├── 04-metricas.md                # Avaliação e testes de stress
+│   └── 05-pitch.md                   # Roteiro de apresentação da solução
 │
 ├── 📁 src/                           # Código da aplicação
-│   └── app.py                        # (exemplo de estrutura)
+│   ├── app.py                        # Motor do Chatbot (Streamlit + Groq + Python)
+│   └── README.md                     # Guia de instalação e execução
 │
-├── 📁 assets/                        # Imagens e diagramas
-│   └── ...
-│
-└── 📁 examples/                      # Referências e exemplos
-    └── README.md
+└── 📁 assets/                        # Imagens e diagramas
+    └── ...
 ```
-
----
-
-## Dicas Finais
-
-1. **Comece pelo prompt:** Um bom system prompt é a base de um agente eficaz
-2. **Use os dados mockados:** Eles garantem consistência e evitam problemas com dados sensíveis
-3. **Foque na segurança:** No setor financeiro, evitar alucinações é crítico
-4. **Teste cenários reais:** Simule perguntas que um cliente faria de verdade
-5. **Seja direto no pitch:** 3 minutos passam rápido, vá ao ponto
